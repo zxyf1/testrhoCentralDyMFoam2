@@ -192,14 +192,14 @@ int main(int argc, char *argv[])
         surfaceScalarField phi("phi", aphiv_pos*rho_pos + aphiv_neg*rho_neg);
 
 // output flux variables
-        Info << "FLUXES" << endl;
+/*        Info << "FLUXES" << endl;
         Info << "aphiv_pos" << aphiv_pos << endl;
         Info << "rho_pos" << rho_pos << endl;
         Info << "aphi_neg" << aphiv_neg << endl;
         Info << "rho_neg" << rho_neg << endl;
-  
+*/  
      //Before solve density eqn, phi was defined here.
-        Info << "phi before solve density eqn:" << phi << endl;
+ //       Info << "phi before solve density eqn:" << phi << endl;
 
         surfaceVectorField phiUp =
             (aphiv_pos*rhoU_pos + aphiv_neg*rhoU_neg)
@@ -221,20 +221,20 @@ int main(int argc, char *argv[])
         Info<< "check point 7\n" << endl;
         volTensorField tauMC("tauMC", mu*dev2(fvc::grad(U)().T()));
 
-        Info << "Before solve density equation rho = " << rho << endl;
+  /*      Info << "Before solve density equation rho = " << rho << endl;
         Info << "Before solve density equation phi = " << phi << endl;
-       
+      
         Info << "Before solve density equation  p = " << p << endl;
         Info << "Before solve density equation  T = " << T << endl;
-       
+   */    
 // --- Solve density
         solve(fvm::ddt(rho) + fvc::div(phi));
-        Info << "output updated rho values" << endl;
+    /*    Info << "output updated rho values" << endl;
         Info << "rho = " << rho << endl;
         
         Info << "After solve density equation  p = " << p << endl;
         Info << "After solve density equation  T = " << T << endl;
-
+*/
         // --- Solve momentum
         solve(fvm::ddt(rhoU) + fvc::div(phiUp));
        Info<< "check point 8\n" << endl;
