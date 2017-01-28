@@ -1,0 +1,4 @@
+testrhoCentralDyMFoam2.C
+
+EXE = $(FOAM_APPBIN)/testrhoCentralDyMFoam2
+
