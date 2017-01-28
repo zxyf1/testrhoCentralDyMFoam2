@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
         //Info << "phiv_pos = " << phiv_pos << endl;
         //Info << "phiv_neg = " << phiv_neg << endl;
 //floating point exception(core dumped)
-       Info<< "check point 2\n" << endl;
+/*       Info<< "check point 2\n" << endl;
        
        Info << "Cp:***************"<< endl
             << thermo.Cp() << endl;
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
             << thermo.Cv() << endl;
        Info << "rPsi:*************"<< endl  
 	    << rPsi << endl;
-/*
+
        Info << "p:*************"<< endl  
 	    << p << endl;
         Info << "rho:*************"<< endl  
