@@ -108,6 +108,8 @@ int main(int argc, char *argv[])
         
         Info << "last time step T: " << T.oldTime() << endl;
         Info << "last time step rho: " << rho.oldTime() << endl;
+        Info << "last time step rhoU: " << rhoU.oldTime() << endl;
+        Info << "last time step phiUp: " << phiUp.oldTime() << endl;
 
        // #include "volContinuity.H"   //newly added xiaoyue 
        /* 
