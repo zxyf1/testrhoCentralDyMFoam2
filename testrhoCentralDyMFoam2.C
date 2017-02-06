@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 {
 #   include "setRootCase.H"
 
+#include "initContinuityErrs.H"
 #   include "createTime.H"
 //#   include "createMesh.H"     //this conflicts with createDynamicFvMesh
 #   include "createDynamicFvMesh.H"   //new
@@ -67,13 +68,14 @@ int main(int argc, char *argv[])
         #include "readTimeControls.H"
         #include "setDeltaT.H"
         
-        runTime++;    // new position to update time
+      //  runTime++;    // new position to update time
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
         // --- upwind interpolation of primitive fields on faces
         // Do any mesh changes
        bool meshChanged =  mesh.update();
 
+            reduce(meshChanged, orOp<bool>());
 
         surfaceScalarField rho_pos =
             fvc::interpolate(rho, pos, "reconstruct(rho)");
@@ -105,12 +107,12 @@ int main(int argc, char *argv[])
         surfaceScalarField phiv_pos = U_pos & mesh.Sf();
         surfaceScalarField phiv_neg = U_neg & mesh.Sf();
         Info<< "check point 1\n" << endl;
-        
+  /*      
         Info << "last time step T: " << T.oldTime() << endl;
         Info << "last time step rho: " << rho.oldTime() << endl;
         Info << "last time step rhoU: " << rhoU.oldTime() << endl;
         Info << "last time step phiUp: " << phiUp.oldTime() << endl;
-
+*/
        // #include "volContinuity.H"   //newly added xiaoyue 
        /* 
         if (checkMeshCourantNo)
@@ -121,12 +123,15 @@ int main(int argc, char *argv[])
         
      //   Info << "mesh.phi() = " << mesh.phi() << endl;
 
+/*
         if (meshChanged)
 	{
 	  phiv_pos -= mesh.phi();
           phiv_neg -= mesh.phi();
           Info << "check mesh moving update1." << endl;
         }
+*/
+//not sure its usage
        
 // I think I need to check wether the code above has something to do with the temperature increasing
 
@@ -188,20 +193,17 @@ int main(int argc, char *argv[])
 
         #include "compressibleCourantNo.H"
        
-
-//        runTime++;      
-
         surfaceScalarField phi("phi", aphiv_pos*rho_pos + aphiv_neg*rho_neg);
 
-// output flux variables
-/*        Info << "FLUXES" << endl;
-        Info << "aphiv_pos" << aphiv_pos << endl;
-        Info << "rho_pos" << rho_pos << endl;
-        Info << "aphi_neg" << aphiv_neg << endl;
-        Info << "rho_neg" << rho_neg << endl;
-*/  
+        // Make the fluxes absolute
+        fvc::makeAbsolute(phi, U);      
+
+        runTime++;      
+
+        Info<< "Time = " << runTime.timeName() << nl << endl;
+        //surfaceScalarField phi("phi", aphiv_pos*rho_pos + aphiv_neg*rho_neg);
+
      //Before solve density eqn, phi was defined here.
- //       Info << "phi before solve density eqn:" << phi << endl;
 
         surfaceVectorField phiUp =
             (aphiv_pos*rhoU_pos + aphiv_neg*rhoU_neg)
@@ -212,31 +214,34 @@ int main(int argc, char *argv[])
           + aphiv_neg*(rho_neg*(e_neg + 0.5*magSqr(U_neg)) + p_neg)
           + aSf*p_pos - aSf*p_neg;
        Info<< "check point 6\n" << endl;
-	// Make flux for pressure-work absolute
+
+            // Store divU from the previous mesh for the correctPhi
+            volScalarField divU = fvc::div(phi);
+
+#           include "volContinuity.H"
+
+       if ( meshChanged )
+       {
+         #include "correctPhi.H"
+       }
+
+        // Make the fluxes relative to the mesh motion
+        fvc::makeRelative(phi, U);
+
+/*	// Make flux for pressure-work absolute
 
        if (meshChanged)
         {
             phiEp += mesh.phi()*(a_pos*p_pos + a_neg*p_neg);
             Info << "check Mesh moving update2." <<endl; 
         }
-      
+ */     
         Info<< "check point 7\n" << endl;
         volTensorField tauMC("tauMC", mu*dev2(fvc::grad(U)().T()));
 
-  /*      Info << "Before solve density equation rho = " << rho << endl;
-        Info << "Before solve density equation phi = " << phi << endl;
-      
-        Info << "Before solve density equation  p = " << p << endl;
-        Info << "Before solve density equation  T = " << T << endl;
-   */    
 // --- Solve density
         solve(fvm::ddt(rho) + fvc::div(phi));
-    /*    Info << "output updated rho values" << endl;
-        Info << "rho = " << rho << endl;
-        
-        Info << "After solve density equation  p = " << p << endl;
-        Info << "After solve density equation  T = " << T << endl;
-*/
+
         // --- Solve momentum
         solve(fvm::ddt(rhoU) + fvc::div(phiUp));
        Info<< "check point 8\n" << endl;
