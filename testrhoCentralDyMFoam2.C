@@ -186,18 +186,21 @@ int main(int argc, char *argv[])
 
         surfaceScalarField aphiv_pos = phiv_pos - aSf;
         surfaceScalarField aphiv_neg = phiv_neg + aSf;
-    Info<< "check point 5\n" << endl;
+        Info<< "check point 5\n" << endl;
         // Reuse amaxSf for the maximum positive and negative fluxes
         // estimated by the central scheme
         amaxSf = max(mag(aphiv_pos), mag(aphiv_neg));
 
+        Info<< "check point 5.1\n" << endl;
         #include "compressibleCourantNo.H"
        
         surfaceScalarField phi("phi", aphiv_pos*rho_pos + aphiv_neg*rho_neg);
 
+        Info<< "check point 5.2\n" << endl;
         // Make the fluxes absolute
-        fvc::makeAbsolute(phi, U);      
+        //fvc::makeAbsolute(phi, U);     //this line was commented out due to the dimension error 0207 
 
+        Info<< "check point 5.3\n" << endl;
         runTime++;      
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
@@ -205,6 +208,7 @@ int main(int argc, char *argv[])
 
      //Before solve density eqn, phi was defined here.
 
+        Info<< "check point 5.4\n" << endl;
         surfaceVectorField phiUp =
             (aphiv_pos*rhoU_pos + aphiv_neg*rhoU_neg)
           + (a_pos*p_pos + a_neg*p_neg)*mesh.Sf();
