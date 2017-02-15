@@ -74,34 +74,42 @@ int main(int argc, char *argv[])
         // Do any mesh changes
        bool meshChanged =  mesh.update();
 
+        Info<< "check point 0\n" << endl;
 
+        Info <<" rho:" << rho << endl;
         surfaceScalarField rho_pos =
             fvc::interpolate(rho, pos, "reconstruct(rho)");
         surfaceScalarField rho_neg =
             fvc::interpolate(rho, neg, "reconstruct(rho)");
 
+        Info<< "check point 0.1\n" << endl;
         surfaceVectorField rhoU_pos =
             fvc::interpolate(rhoU, pos, "reconstruct(U)");
         surfaceVectorField rhoU_neg =
             fvc::interpolate(rhoU, neg, "reconstruct(U)");
 
+        Info<< "check point 0.2\n" << endl;
         volScalarField rPsi = 1.0/psi;
         surfaceScalarField rPsi_pos =
             fvc::interpolate(rPsi, pos, "reconstruct(T)");
         surfaceScalarField rPsi_neg =
             fvc::interpolate(rPsi, neg, "reconstruct(T)");
 
+        Info<< "check point 0.3\n" << endl;
         surfaceScalarField e_pos =
             fvc::interpolate(e, pos, "reconstruct(T)");
         surfaceScalarField e_neg =
             fvc::interpolate(e, neg, "reconstruct(T)");
 
+        Info<< "check point 0.4\n" << endl;
         surfaceVectorField U_pos = rhoU_pos/rho_pos;
         surfaceVectorField U_neg = rhoU_neg/rho_neg;
 
+        Info<< "check point 0.5\n" << endl;
         surfaceScalarField p_pos = rho_pos*rPsi_pos;
         surfaceScalarField p_neg = rho_neg*rPsi_neg;
 
+        Info<< "check point 0.6\n" << endl;
         surfaceScalarField phiv_pos = U_pos & mesh.Sf();
         surfaceScalarField phiv_neg = U_neg & mesh.Sf();
         Info<< "check point 1\n" << endl;
@@ -109,7 +117,7 @@ int main(int argc, char *argv[])
         Info << "last time step T: " << T.oldTime() << endl;
         Info << "last time step rho: " << rho.oldTime() << endl;
         Info << "last time step rhoU: " << rhoU.oldTime() << endl;
-        Info << "last time step phiUp: " << phiUp.oldTime() << endl;
+//        Info << "last time step phiUp: " << phiUp.oldTime() << endl;
 
        // #include "volContinuity.H"   //newly added xiaoyue 
        /* 
