@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
           phiv_neg -= mesh.phi();
           Info << "check mesh moving update1." << endl;
         }
+
        
 // I think I need to check wether the code above has something to do with the temperature increasing
 
@@ -221,13 +222,13 @@ int main(int argc, char *argv[])
           + aSf*p_pos - aSf*p_neg;
        Info<< "check point 6\n" << endl;
 	// Make flux for pressure-work absolute
-
+/*
        if (meshChanged)
         {
             phiEp += mesh.phi()*(a_pos*p_pos + a_neg*p_neg);
             Info << "check Mesh moving update2." <<endl; 
         }
-      
+*/
         Info<< "check point 7\n" << endl;
         volTensorField tauMC("tauMC", mu*dev2(fvc::grad(U)().T()));
 
